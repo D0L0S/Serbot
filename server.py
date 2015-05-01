@@ -34,7 +34,7 @@ class serbot():
 		self.allConnections = []
 		self.allAddresses = []
 
-	#Close all Connections-->
+	#Close all Connections
 	def quitClients(self):
 		for item in allConnections:
 			try:
@@ -47,7 +47,7 @@ class serbot():
 		del allAddresses[:]	
 	#<--
 	
-	#Get Client Connections-->
+	#Get Client Connections
 	def getConnections(self):
 		quitClients()
 	
@@ -61,7 +61,7 @@ class serbot():
 				break
 	#<--
 	
-	#Proper Sending to Controller-->
+	#Proper Sending to Controller
 	def sendController(self, msg, q):
 		try:
 			q.send(msg)
