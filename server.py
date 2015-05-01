@@ -45,7 +45,6 @@ class serbot():
 	
 		del allConnections[:]
 		del allAddresses[:]	
-	#<--
 	
 	#Get Client Connections
 	def getConnections(self):
@@ -59,7 +58,6 @@ class serbot():
 				allAddresses.append(addr)
 			except: #Time's up
 				break
-	#<--
 	
 	#Proper Sending to Controller
 	def sendController(self, msg, q):
@@ -67,7 +65,6 @@ class serbot():
 			q.send(msg)
 			return 1 #success
 		except: return 0 #fail
-	#<--
 	
 	def main(self):
 		## ###############################
