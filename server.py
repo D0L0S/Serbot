@@ -8,6 +8,7 @@ import sys
 import threading
 import time
 
+import database
 
 intro = """
  ____ ____ ____ ____ ____ ____ 
