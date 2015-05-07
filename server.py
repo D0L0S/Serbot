@@ -23,15 +23,6 @@ Blog: http://dotcppfile.worpdress.com"
 
 class serbot():
 	def __init__(self):
-		self.socket=socket(AF_INET, SOCK_STREAM)
-		self.socket.settimeout(5) #5 seconds are given for every operation by socket `s`
-		self.socket.bind(("0.0.0.0", args.port))
-		self.socket.listen(5)
-		
-		self.bridge=socket(AF_INET, SOCK_STREAM)
-		self.bridge.bind(("0.0.0.0", args.bridgeport))
-		self.bridge.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
-		
 		self.allConnections = []
 		self.allAddresses = []
 
@@ -68,10 +59,19 @@ class serbot():
 		except: return 0 #fail
 	
 	def main(self):
+		
+		self.socket=socket(AF_INET, SOCK_STREAM)
+		self.socket.settimeout(5) #5 seconds are given for every operation by socket `s`
+		self.socket.bind(("0.0.0.0", args.port))
+		self.socket.listen(5)
+		
+		self.bridge=socket(AF_INET, SOCK_STREAM)
+		self.bridge.bind(("0.0.0.0", args.bridgeport))
+		self.bridge.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+		
 		## ###############################
 		##   local mapping, quick hack; needs to be reworked
 		## ###############################
-		bridge = self.bridge
 		websocket = self.websocket
 		allAddresses = self.allAddresses
 		allConnections = self.allConnections
@@ -79,7 +79,7 @@ class serbot():
 		handle = serbot().handle
 		
 		while 1:
-			bridge.listen(0) #There is no Queue; no one waits, 1 valid controller connection or nothing.
+			self.bridge.listen(0) #There is no Queue; no one waits, 1 valid controller connection or nothing.
 			q,addr=bridge.accept()
 	
 			cpass = q.recv(20480)
