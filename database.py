@@ -6,7 +6,7 @@ import mysql.connector
 class Database:
 
 	def __init__(self):
-		user='root'
+		user='serbot'
 		host='127.0.0.1'
 		database='serbot'
 		self.cnx = mysql.connector.connect(user=self.user, host=self.host, database=self.database)
