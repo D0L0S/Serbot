@@ -96,11 +96,9 @@ class serbot():
 		## ###############################
 		##   local mapping, quick hack; needs to be reworked
 		## ###############################
-		websocket = self.websocket
 		allAddresses = self.allAddresses
 		allConnections = self.allConnections
 		sendController = serbot().sendController
-		handle = serbot().handle
 		
 		while 1:
 			self.bridge.listen(0) #There is no Queue; no one waits, 1 valid controller connection or nothing.
