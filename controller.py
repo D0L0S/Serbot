@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import argparse, subprocess, os, sys, time, threading
+import argparse
+import os
+import subprocess
+import sys
+import threading
+import time
 from socket import *
 
 intro = """
@@ -155,7 +160,6 @@ if __name__=="__main__":
 	parser.add_argument('-v', '--version',
 						action='version',
 						version=' [+] Version: 1.0')
-						#version=' [+] %(prog)s 1.0')
 	args = parser.parse_args()
 	control().main()
 
