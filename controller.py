@@ -68,8 +68,8 @@ class control():
 		try:
 			s=socket(AF_INET, SOCK_STREAM)
 			s.connect((args.host,args.port))
-		except:
-			sys.exit("[ERROR] Can't connect to server")
+		except Exception as e:
+			sys.exit(e)
 
 		s.send(args.password)
 
