@@ -27,7 +27,7 @@ class ClientTCPHandler(SocketServer.BaseRequestHandler):
     def handle(self):
 		# self.request is the client connection
 		data = self.request.recv(20480)
-		reply = pipe_command(my_unix_command, data)
+		reply = "TEST" #pipe_command(my_unix_command, data)
 		if reply is not None:
 			self.request.send(reply)
 		#self.request.close()
