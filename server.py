@@ -53,8 +53,6 @@ def quitClients():
 
 #Get Client Connections-->
 def getConnections():
-	quitClients()
-
 	while 1:
 		try:
 			q,addr=s.accept() #Lasts 5 seconds and then Exception is raised
