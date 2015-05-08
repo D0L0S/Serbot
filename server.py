@@ -6,6 +6,8 @@ from socket import *
 import sys
 import time
 
+import database
+
 if (len(sys.argv) == 4):
 	port = int(sys.argv[1])
 	bridgeport = int(sys.argv[2])
