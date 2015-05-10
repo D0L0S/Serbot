@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
 import os
 from socket import *
 import sys
@@ -26,6 +27,8 @@ Twitter: https://twitter.com/dotcppfile
 Blog: http://dotcppfile.worpdress.com"
 """
 
+_API_VERSION = 'v0.1'
+
 s=socket(AF_INET, SOCK_STREAM)
 s.settimeout(5) #5 seconds are given for every operation by socket `s`
 s.bind(("0.0.0.0",port))
@@ -49,7 +52,11 @@ def quitClients():
 
 	del allConnections[:]
 	del allAddresses[:]	
-#<--
+
+def jsonDecode(string, value):
+	parsed_json = json.loads(string)
+	result = (parsed_json[value])
+	return str(result)
 
 def getConnections():
 	while True:
@@ -73,24 +80,24 @@ def sendController(msg, q):
 		q.send(msg)
 		return 1 #success
 	except: return 0 #fail
-#<--
+
+def verifyUser(credentials):
+	Passwd = jsonDecode(credentials, "password")
+	if (Passwd == password): return True     
+	else: return False
 
 def main():
 	while 1:
-		bridge.listen(0) #There is no Queue; no one waits, 1 valid controller connection or nothing.
+		bridge.listen(0)
 		q,addr=bridge.accept()
-
 		cpass = q.recv(20480)
-		
-		if (cpass == password): loginsucc=True
-		else: loginsucc=False
+		verifyUser(cpass)
 
-		timeout = time.time() + 500 #A Controller can't stay here forever, only 5 minutes are given. He should connect back if needed. This is added incase a Controller forgot to close the connection himself and went out on a date...
-
+		timeout = time.time() + 500
 		breakit = False
+		
 		while 1:
-			if (loginsucc == False): break #Wrong Pass; the controller gets kicked
-
+			if (verifyUser == False): break #Wrong Pass; the controller gets kicked
 			if ((time.time() > timeout) or (breakit == True)): break #5 minutes passed; the controller gets kicked
 
 			try: command = q.recv(20480)
