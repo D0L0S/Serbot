@@ -51,17 +51,21 @@ def quitClients():
 	del allAddresses[:]	
 #<--
 
-#Get Client Connections-->
 def getConnections():
-	while 1:
+	while True:
 		try:
 			q,addr=s.accept() #Lasts 5 seconds and then Exception is raised
 			q.setblocking(1) #Every new socket has no timeout; every operation takes its time.
 			allConnections.append(q) #Holding our New Connections/Sockets
 			allAddresses.append(addr)
+			Insert = 'INSERT INTO clients (id, ip_address, active) VALUES ("1", "{address}", "1");'.format(address=str(addr[0]))
+			try:
+				db = Database().query(Insert)
+				print " [+] {address} Inserted to Database".format(address=addr[0])
+			except Exception as e:
+				print "[ERROR] " + str(e)
 		except: #Time's up
 			break
-#<--
 
 #Proper Sending to Controller-->
 def sendController(msg, q):
