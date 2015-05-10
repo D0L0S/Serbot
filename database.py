@@ -1,27 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import mysql.connector
+import MySQLdb as mdb
+import sys
 
 class Database:
 
 	def __init__(self):
-		user='serbot'
-		host='127.0.0.1'
-		database='serbot'
-		self.cnx = mysql.connector.connect(user=self.user, host=self.host, database=self.database)
+		self.user='serbot'
+		self.password='password'
+		self.host='127.0.0.1'
+		self.database='serbot'
+		self.con = mdb.connect(self.host, self.user, self.password, self.database);
 
 	def query(self, q):
-		cursor = self.cnx.cursor()
-		cursor.execute(q)
-		columns = tuple( [d[0].decode('utf8') for d in cursor.description] )
-		result = []
-		for row in cursor:
-			result.append(dict(zip(columns, row)))
-		return result
+		try:
+			with self.con:
+				cur = self.con.cursor()
+				cur.execute(q)
+                
+				rows = cur.fetchall()
+				return rows
 
+		except Exception as e:
+			print e
 	def __del__(self):
-		self.cnx.close()
+		self.con.close()
 
 
 if __name__=="__main__":
