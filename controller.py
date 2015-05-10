@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -76,7 +77,10 @@ class control():
 		except Exception as e:
 			sys.exit(e)
 
-		s.send(args.password)
+		login = {'password': args.password}
+		login = json.dumps(login)
+		s.send(login)
+
 
 		while 1:
 			command = raw_input("> ")
