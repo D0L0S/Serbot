@@ -51,7 +51,9 @@ def quitClients():
 			pass
 
 	del allConnections[:]
-	del allAddresses[:]	
+	del allAddresses[:]
+	updateDB = "UPDATE clients SET active="0";"
+	db = Database().query(updateDB)
 
 def jsonDecode(string, value):
 	parsed_json = json.loads(string)
