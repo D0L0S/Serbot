@@ -111,8 +111,7 @@ class control():
 					s.send(Cmd)
 					reply = s.recv(20480)
 					decode = control.jsonDecode(self, reply, "command")
-					reply = s.recv(20480)
-					print reply
+					print decode
 
 			except KeyboardInterrupt:
 				try:
