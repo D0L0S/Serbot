@@ -60,22 +60,42 @@ custombruteforce <address>:<port>:<email>:<keys>:<min>:<max>
 	
 class control():
 
-	def jsonDecode(self, string, value):
-		parsed_json = json.loads(string)
-		status = (parsed_json["status"])
-		if status == "OK":
-			result = (parsed_json["command"])
-			if result == "list":
-				client = (parsed_json["clients"])
-				for cl in client:
-					print cl
-				reply = client
-			else: 
-				reply = (parsed_json["reply"])
+	def formatData(self, data):
+		#item=data[0]
+		#print item
+		#ip = (item[u'ip'])
+		#print ip
+		
+		ipAddresses = []
+		length = len(ipAddresses)
+		i=0
+		print " _____________________"
+		print "| # |       IP        |"
+		print "|---------------------|"
+		for client in data:
+			IP = (client[u'ip'])
+			print "| {lenn} | {ip} ".format(lenn=str(i), ip=IP)
+			i=i+1
+		
+		print " --------------------- "
+		return " "
+		
+	def jsonDecode(self, string):
+		try:
+			parsed_json = json.loads(string)
+			status = (parsed_json["status"])
+			if status == "OK":
+				command = (parsed_json["command"])
+				if (command == "list"):
+					client = (parsed_json["clients"])
+					reply = control.formatData(self, client)
+				else: 
+					reply = (parsed_json["reply"])
+			else:
+				reply = (parsed_json["error"])
 			return str(reply)
-		else:
-			error = (parsed_json["error"])
-			return str(error)
+		except Exception as e:
+			print " [!] {error}".format(error=str(e))
 
 	def main(self):
 		print intro
