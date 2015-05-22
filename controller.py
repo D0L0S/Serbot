@@ -64,7 +64,7 @@ class control():
 		parsed_json = json.loads(string)
 		status = (parsed_json["status"])
 		if status == "OK":
-			result = (parsed_json[value])
+			result = (parsed_json["command"])
 			if result == "list":
 				print string
 			else: 
