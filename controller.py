@@ -66,8 +66,10 @@ class control():
 		if status == "OK":
 			result = (parsed_json["command"])
 			if result == "list":
-				reply = (parsed_json["clients"])
-				print reply
+				client = (parsed_json["clients"])
+				for cl in client:
+					print cl
+				reply = client
 			else: 
 				reply = (parsed_json["reply"])
 			return str(reply)
