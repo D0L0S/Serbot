@@ -96,8 +96,6 @@ class control():
 			print " [!] {error}".format(error=str(e))
 
 	def main(self):
-		print intro
-		
 		try:
 			s=socket(AF_INET, SOCK_STREAM)
 			s.connect((args.host,args.port))
@@ -159,4 +157,5 @@ if __name__=="__main__":
 	args = parser.parse_args()
 	if sys.platform == 'win32': os.system("cls")
 	else: os.system("clear")
+	print intro
 	control().main()
