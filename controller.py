@@ -64,17 +64,20 @@ class control():
 		ipAddresses = []
 		length = len(ipAddresses)
 		i=0
-		print " _____________________"
-		print "| # |       IP        |"
-		print "|---------------------|"
-		for client in data:
-			IP = (client[u'ip'])
-			print "| {lenn} | {ip} ".format(lenn=str(i), ip=IP)
-			i=i+1
-		
-		print " --------------------- "
-		return " "
-		
+		if length >= 1:
+			print " _____________________"
+			print "| # |       IP        |"
+			print "|---------------------|"
+			for client in data:
+				IP = (client[u'ip'])
+				print "| {lenn} | {ip} ".format(lenn=str(i), ip=IP)
+				i=i+1
+			
+			print " --------------------- "
+			return " "
+		else:
+			return " [-] No Clients Connected"
+			
 	def jsonDecode(self, string):
 		try:
 			parsed_json = json.loads(string)
@@ -154,4 +157,8 @@ if __name__=="__main__":
 						action='version',
 						version=' [+] Version: 1.0')
 	args = parser.parse_args()
+	if sys.platform == 'win32':
+		os.system("cls")
+	else:
+		os.system("clear")
 	control().main()
