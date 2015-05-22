@@ -157,8 +157,6 @@ if __name__=="__main__":
 						action='version',
 						version=' [+] Version: 1.0')
 	args = parser.parse_args()
-	if sys.platform == 'win32':
-		os.system("cls")
-	else:
-		os.system("clear")
+	if sys.platform == 'win32': os.system("cls")
+	else: os.system("clear")
 	control().main()
