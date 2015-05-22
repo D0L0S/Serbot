@@ -61,11 +61,6 @@ custombruteforce <address>:<port>:<email>:<keys>:<min>:<max>
 class control():
 
 	def formatData(self, data):
-		#item=data[0]
-		#print item
-		#ip = (item[u'ip'])
-		#print ip
-		
 		ipAddresses = []
 		length = len(ipAddresses)
 		i=0
