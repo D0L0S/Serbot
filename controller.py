@@ -62,7 +62,7 @@ class control():
 
 	def formatData(self, data):
 		ipAddresses = []
-		length = len(ipAddresses)
+		length = len(data)
 		i=0
 		if length >= 1:
 			print " _____________________"
