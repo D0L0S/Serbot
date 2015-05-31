@@ -126,7 +126,8 @@ class control():
 					Cmd = json.dumps(Cmd)
 					s.send(Cmd)
 					reply = s.recv(20480)
-					print reply
+					decode = control.jsonDecode(self, reply)
+					print decode
 
 				else:
 					Cmd = {'command': command}
