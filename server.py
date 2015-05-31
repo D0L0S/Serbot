@@ -135,21 +135,24 @@ def interact(id, timeout, q):
 					break
 					
 				try:
-					if ("cd " in command):
-						allConnections[id].send(data)
-						msg=allConnections[id].recv(20480)
-						vtpath = msg + "> "
-						if (sendController(vtpath, q) == 0):
-							breakit = True
-							break
-					elif (command == "stop"): 
+					#if ("cd " in command):
+					#	allConnections[id].send(data)
+					#	msg=allConnections[id].recv(20480)
+					#	vtpath = msg + "> "
+					#	print "PATH: " + str(vtpath)
+					#	if (sendController(vtpath, q) == 0):
+					#		breakit = True
+					#		break
+					if (command == "stop"): 
 						closed = {"status":"OK", "command":"interact", "reply": "Connection Closed", "error": "null"}
 						sendController(closed, q)
 						break
 					else:
 						allConnections[id].send(command)
 						msg=allConnections[id].recv(20480)
-						if (sendController(msg, q) == 0):
+						body = {"status":"OK", "command":"interact", "reply": msg, "error": "null"}
+						reply = json.dumps(body) 
+						if (sendController(reply, q) == 0):
 							breakit = True
 							break
 				except:
