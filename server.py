@@ -205,13 +205,6 @@ def main():
 					reply = {"status":"ERROR", "command":"interact", "reply": " ", "error": "ID Out Of Range"}
 					sendController(reply, q)
 
-#
-			#elif ("udpfloodall " in command or "tcpfloodall " in command):
-			#	for item in allConnections:
-			#		try:
-			#			item.send(command)
-			#		except:
-			#			pass
 			#elif (command == "selfupdateall"):
 			#	for item in allConnections:
 			#		try:
