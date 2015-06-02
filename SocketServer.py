@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+import socket
 import SocketServer
+import threading
 
 class ForkingEchoRequestHandler(SocketServer.BaseRequestHandler):
 
@@ -18,8 +20,6 @@ class ForkingEchoServer(SocketServer.ForkingMixIn, SocketServer.TCPServer):
     pass
 
 if __name__ == '__main__':
-    import socket
-    import threading
 
     address = ('localhost', 0) # let the kernel give us a port
     server = ForkingEchoServer(address, ForkingEchoRequestHandler)
