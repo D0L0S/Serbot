@@ -5,6 +5,7 @@ import json
 import os
 from socket import *
 import sys
+import threading
 import time
 
 from database import *
@@ -25,14 +26,16 @@ intro = """
 """
 _API_VERSION = 'v0.1'
 
-s=socket(AF_INET, SOCK_STREAM)
-s.settimeout(5) #5 seconds are given for every operation by socket `s`
-s.bind(("0.0.0.0",port))
-s.listen(5)
+def guestSocket():
+	s=socket(AF_INET, SOCK_STREAM)
+	s.settimeout(5) #5 seconds are given for every operation by socket `s`
+	s.bind(("0.0.0.0",port))
+	s.listen(5)
 
-bridge=socket(AF_INET, SOCK_STREAM)
-bridge.bind(("0.0.0.0",bridgeport))
-bridge.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+def controlSocket():
+	bridge=socket(AF_INET, SOCK_STREAM)
+	bridge.bind(("0.0.0.0",bridgeport))
+	bridge.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
 allConnections = []
 allAddresses = []
@@ -164,6 +167,17 @@ def interact(id, timeout, q):
 			print " [!] {error}".format(error=e)
     
 def main():
+	#Declair Threads
+	guestThread = threading.Thread(target=guestSocket, name="Guest Socket Thread")
+	controlThread = threading.Thread(target=controlSocket, name="Control Socket Thread")
+	
+	#Start Threads
+	guestThread.start()
+	controlThread.start()
+	
+	if threading.active_count() == 3: print "Socket Threads Started Successfully"
+	else: print "Unable to Start Threads"
+	
 	while True:
 		bridge.listen(0)
 		q,addr=bridge.accept()
