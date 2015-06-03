@@ -9,6 +9,7 @@ import threading
 import time
 
 from database import *
+from ThreadedSocket import *
 
 if (len(sys.argv) == 4):
 	port = int(sys.argv[1])
@@ -165,7 +166,11 @@ def interact(id, timeout, q):
 					break
 		except Exception as e:
 			print " [!] {error}".format(error=e)
-    
+  
+def threads():
+	server = Server()
+	server.run()
+	
 def main():
 	#Declair Threads
 	guestThread = threading.Thread(target=guestSocket, name="Guest Socket Thread")
@@ -232,7 +237,7 @@ def main():
 				break
 			else:
 				if (sendController(" [!] I'm Affraid I Can't Let You Do That Dave", q) == 0): break
-
+threads()
 while True:
 	try:		
 		main()
