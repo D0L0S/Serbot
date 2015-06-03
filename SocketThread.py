@@ -9,29 +9,21 @@ import time
 QUIT = False
 
 class ClientThread( threading.Thread ):
- 
     #Class that implements the client threads in this server
 
-
     def __init__( self, client_sock ):
-
         #Initialize the object, save the socket that this thread will use.
-
         threading.Thread.__init__( self )
         self.client = client_sock
 
     def run( self ):
         #Thread's main loop. Once this function returns, the thread is finished 
         #and dies. 
-        #
         # Need to declare QUIT as global, since the method can change it
-        #
         global QUIT
         done = False
         cmd = self.readline()
-        #
         # Read data from the socket and process it
-        #
         while not done:
             if 'quit' == cmd :
                 self.writeline( 'Ok, bye' )
@@ -44,10 +36,7 @@ class ClientThread( threading.Thread ):
                 self.writeline( self.name )
 
             cmd = self.readline()
-
-        #
         # Make sure the socket is closed once we're done with it
-        #
         self.client.close()
         return
 
@@ -55,7 +44,6 @@ class ClientThread( threading.Thread ):
         #Helper function, reads up to 1024 chars from the socket, and returns 
         #them as a string, all letters in lowercase, and without any end of line 
         #markers
-
         result = self.client.recv( 1024 )
         if( None != result ):
             result = result.strip().lower()
@@ -63,35 +51,27 @@ class ClientThread( threading.Thread ):
         return result
 
     def writeline( self, text ):
-
         #Helper function, writes teh given string to the socket, with an end of 
         #line marker appended at the end 
-
         self.client.send( text.strip() + '\n' )
 
 class Server: 
-	
     #Server class. Opens up a socket and listens for incoming connections.
     #Every time a new connection arrives, it creates a new ClientThread thread
     #object and defers the processing of the connection to it. 
 
-    def __init__( self ):
+    def __init__(self):
         self.sock = None
         self.thread_list = []
 
-    def run( self ):
-
+    def run(self, port):
         #Server main loop. 
         #Creates the server (incoming) socket, and listens on it of incoming
         #connections. Once an incomming connection is deteceted, creates a 
         #ClientThread to handle it, and goes back to listening mode.
-
         all_good = False
         try_count = 0
-
-        #
         # Attempt to open the socket
-        #
         while not all_good:
             if 3 < try_count:
                 sys.exit( 1 )
@@ -99,10 +79,10 @@ class Server:
 			
             try:
                 self.sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
-                self.sock.bind(("0.0.0.0", 3333))
+                self.sock.bind(("0.0.0.0", port))
                 self.sock.listen(5)
                 all_good = True
-                #break
+                break
             except socket.error, err:
                 print 'Socket connection error... Waiting 10 seconds to retry.'
                 del self.sock
@@ -113,49 +93,35 @@ class Server:
         print "Try to connect through the command line, with:"
         print "telnet localhost 5050"
         print "and then type whatever you want."
-        print
         print "typing 'bye' finishes the thread, but not the server ",
         print "(eg. you can quit telnet, run it again and get a different ",
         print "thread name"
         print "typing 'quit' finishes the server"
 
         try:
-            #
-            # NOTE - No need to declare QUIT as global, since the method never 
-            #    changes its value
-            #
             while not QUIT:
                 try:
-                    #
                     # Wait for half a second for incoming connections
-                    #
                     self.sock.settimeout( 0.500 )
                     client = self.sock.accept()[0]
                 except socket.timeout:
-                    #
                     # No connection detected, sleep for one second, then check
                     # if the global QUIT flag has been set
-                    #
                     time.sleep( 1 )
                     if QUIT:
                         print "Received quit command. Shutting down..."
                         break
                     continue
-                #
                 # Create the ClientThread object and let it handle the incoming
                 # connection
-                #
                 new_thread = ClientThread( client )
                 print 'Incoming Connection. Started thread ',
                 print new_thread.getName()
                 self.thread_list.append( new_thread )
                 new_thread.start()
-
-                #
                 # Go over the list of threads, remove those that have finished
                 # (their run method has finished running) and wait for them 
                 # to fully finish
-                #
                 for thread in self.thread_list:
                     if not thread.isAlive():
                         self.thread_list.remove( thread )
@@ -165,23 +131,17 @@ class Server:
             print "Ctrl+C pressed... \nShutting Down"
         except Exception, err:
             print "Exception caught: {error}\nClosing...".format(error=err)
-
-        #
         # Clear the list of threads, giving each thread 1 second to finish
         # NOTE: There is no guarantee that the thread has finished in the
         #    given time. You should always check if the thread isAlive() after
         #    calling join() with a timeout paramenter to detect if the thread
         #    did finish in the requested time
-        #
         for thread in self.thread_list:
             thread.join( 1.0 )
-        #
         # Close the socket once we're done with it
-        #
         self.sock.close()
 
 if "__main__" == __name__:
     server = Server()
     server.run()
-
     print "Terminated"
