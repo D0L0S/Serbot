@@ -12,7 +12,6 @@ class ClientThread(threading.Thread):
     #Class that implements the client threads in this server
 
     def __init__(self, client_sock):
-        #Initialize the object, save the socket that this thread will use.
         threading.Thread.__init__(self)
         self.client = client_sock
 
@@ -36,7 +35,7 @@ class ClientThread(threading.Thread):
                 self.writeline(self.name)
 
             cmd = self.readline()
-        # Make sure the socket is closed once we're done with it
+        # close socket
         self.client.close()
         return
 
@@ -102,7 +101,7 @@ class Server:
             while not QUIT:
                 try:
                     # Wait for half a second for incoming connections
-                    self.sock.settimeout(0.500)
+                    self.sock.settimeout(5)
                     client = self.sock.accept()[0]
                 except socket.timeout:
                     # No connection detected, sleep for one second, then check
@@ -138,7 +137,7 @@ class Server:
         #    did finish in the requested time
         for thread in self.thread_list:
             thread.join(1.0)
-        # Close the socket once we're done with it
+        # Close socket
         self.sock.close()
 
 if "__main__" == __name__:
