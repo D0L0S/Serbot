@@ -169,7 +169,7 @@ def interact(id, timeout, q):
   
 def threads():
 	server = Server()
-	server.run()
+	server.run(port)
 	
 def main():
 	#Declair Threads
