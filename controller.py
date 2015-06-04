@@ -126,16 +126,16 @@ class control():
 					Cmd = json.dumps(Cmd)
 					s.send(Cmd)
 					reply = s.recv(20480)
-					decode = control.jsonDecode(self, reply)
-					print decode
+					Reply = Decode().process(reply)
+					print str(Reply)
 
 				else:
 					Cmd = {'command': command}
 					Cmd = json.dumps(Cmd)
 					s.send(Cmd)
 					reply = s.recv(20480)
-					decode = control.jsonDecode(self, reply, "command")
-					print decode
+					Reply = Decode().process(reply)
+					print str(Reply)
 
 			except KeyboardInterrupt:
 				try:
