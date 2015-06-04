@@ -16,45 +16,10 @@ execfile("Control.conf", config)
 	
 class control():
 
-	def formatData(self, data):
-		ipAddresses = []
-		length = len(data)
-		i=0
-		if length >= 1:
-			print " _____________________"
-			print "| # |       IP        |"
-			print "|---------------------|"
-			for client in data:
-				IP = (client[u'ip'])
-				print "| {lenn} | {ip} ".format(lenn=str(i), ip=IP)
-				i=i+1
-			
-			print " --------------------- "
-			return " "
-		else:
-			return " [-] No Clients Connected"
-			
-	def jsonDecode(self, string):
-		try:
-			parsed_json = json.loads(string)
-			status = (parsed_json["status"])
-			if status == "OK":
-				command = (parsed_json["command"])
-				if (command == "list"):
-					client = (parsed_json["clients"])
-					reply = control.formatData(self, client)
-				else: 
-					reply = (parsed_json["reply"])
-			else:
-				reply = (parsed_json["error"])
-			return str(reply)
-		except Exception as e:
-			print " [!] {error}".format(error=str(e))
-
 	def main(self):
 		try:
 			s=socket(AF_INET, SOCK_STREAM)
-			s.connect((args.host,args.port))
+			s.connect((config["server"],config["port"]))
 		except Exception as e:
 			sys.exit(e)
 
