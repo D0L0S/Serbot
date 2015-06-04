@@ -7,6 +7,15 @@ import json
 
 class Decode():
 	
+	def process(self, string):
+		jsonString = Decode().parse(string)
+		status = Decode().statusDecode(jsonString)
+		if status == "OK": 
+			reply = Decode().replyDecode(jsonString)
+		else:
+			reply = Decode().errorDecode(jsonString)
+		return reply 
+	
 	def parse(self, string):
 		try:
 			parsed_json = json.loads(string)
@@ -24,17 +33,15 @@ class Decode():
 	
 	def statusDecode(self, string):
 		try:
-			st = Decode().parse(string)
-			status = (st["status"])
-			if status == "OK": Decode().replyDecode(st)
-			else: Decode().errorDecode(string)
+			status = (string["status"])
+			return status
 		except Exception as error:
 			return str(error)
 			
 	def replyDecode(self, string):
 		try:
-			reply = (st["reply"])
-			return str(reply)
+			reply = (string["reply"])
+			return reply
 		except Exception as error:
 			return str(error)
 			
