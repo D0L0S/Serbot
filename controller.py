@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+from ConfigParser import SafeConfigParser
 import json
 import os
 import subprocess
@@ -10,53 +11,8 @@ import threading
 import time
 from socket import *
 
-intro = """
- ____ ____ ____ ____ ____ ____ 
-||S |||e |||r |||b |||o |||t ||
-||__|||__|||__|||__|||__|||__||
-|/__\|/__\|/__\|/__\|/__\|/__\|
-"""
-
-_API_VERSION = 'v0.1'
-
-commands = """
-
-Primary:
---------
-accept                  | Accept connections
-list                    | List connections
-clear                   | Clear the console
-quit                    | Close all connections and quit
-credits                 | Show Credits
-help                    | Show this message
-
-Client Interaction:
--------------------
-interact <id>           | Interact with client
-stop                    | Stop interacting with client
-udpflood <ip>:<port>    | UDP flood threw client
-tcpflood <ip>:<port>    | TCP flood threw client
-serbackdoor <web dir>   | Infects all PHP Pages with Malicious Code that will run the Serbot Client (if killed) again
-rmbackdoor <web dir>    | Removes the Malicious PHP Code
-
-Wide Commands:
---------------
-udpfloodall <ip>:<port> | Same as `udpflood` but for All clients
-tcpfloodall <ip>:<port> | Same as `tcpflood` but for All clients
-selfupdateall           | Update all Clients with the new version from Github
-
-Bruteforce:
------------
-gmailbruteforce <email>:<keys>:<min>:<max>
-yahoobruteforce <email>:<keys>:<min>:<max>
-livebruteforce <email>:<keys>:<min>:<max>
-aolbruteforce <email>:<keys>:<min>:<max>
-	Example: gmailbruteforce someone@gmail.com:0123456789:6:8
-custombruteforce <address>:<port>:<email>:<keys>:<min>:<max>
-	Example: custombruteforce smtp.whatever.com:587:something@whatever.com:abcdefghi:4:6
-
-\n"""
-	
+config = {}
+execfile("Control.conf", config) 	
 	
 class control():
 
@@ -115,7 +71,7 @@ class control():
 					else:
 						os.system("clear")
 				elif(command == "help"):
-					print commands
+					print config["allcommands"]
 				elif("interact" in command):
 					answers = command.split(' ')
 					if len(answers) == 1:
@@ -162,5 +118,5 @@ if __name__=="__main__":
 	args = parser.parse_args()
 	if sys.platform == 'win32': os.system("cls")
 	else: os.system("clear")
-	print intro
+	print config["intro"]
 	control().main()
