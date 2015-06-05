@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
+#import json
 import os
 from socket import *
 import sys
@@ -43,10 +43,10 @@ def quitClients():
 	update = 'UPDATE clients SET active="0";'
 	db = Database().query(update)
     
-def jsonDecode(string, value):
-    parsed_json = json.loads(string)
-    result = (parsed_json[value])
-    return str(result)
+#def jsonDecode(string, value):
+#    parsed_json = json.loads(string)
+#    result = (parsed_json[value])
+#    return str(result)
     
 
 ## Get Client Connections
@@ -81,9 +81,13 @@ def sendController(msg, q):
 
 ## User Login Verification
 def verifyUser(credentials):
-	Passwd = jsonDecode(credentials, "password")
-	if (Passwd == password): return True  
-	else: return False
+	Passwd = Decode().cpassword(credentials)
+	if (Passwd == password): 
+		print " [+] Authetication Successful"		
+		return True  
+	else: 
+		print " [-] Authentication Failed"
+		return False
         
 def listClients():
     clientList = []
