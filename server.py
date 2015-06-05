@@ -80,7 +80,7 @@ def getConnections():
 		client = "Clients"
         
     body = {"status":"OK", "command":"accept", "reply": "{clientNumber} {cli} Added".format(clientNumber=str(len(allAddresses)), cli=client), "error": "null"}
-    reply = json.dumps(body)  
+    reply = Encode().process(body)
     return reply
 
 
@@ -108,7 +108,7 @@ def listClients():
 			for item in allAddresses:
 				d['ip']=str(item[0])
 				clientList.append(d)
-			jsonList = json.dumps(clientList)
+			jsonList = Encode().process(clientList)
 			reply = {"status":"OK", "command":"list", "total": str(length), "clients": clientList, "error": "null"}
 		else: 
 			reply = {"status":"OK", "command":"list", "total": "0", "clients": "null", "error": "null"}
@@ -153,7 +153,7 @@ def interact(id, timeout, q):
 						allConnections[id].send(command)
 						msg=allConnections[id].recv(20480)
 						body = {"status":"OK", "command":"interact", "reply": msg, "error": "null"}
-						reply = json.dumps(body) 
+						reply = Encode().process(body)
 						if (sendController(reply, q) == 0):
 							breakit = True
 							break
@@ -204,13 +204,13 @@ def main():
 				client = jsonDecode(message, "client")
 				if ((int(client) <= len(allAddresses)) and (int(client) >= 0 )):
 					body = {"status":"OK", "command":"interact", "reply": "Connecting To Client", "error": "null"}
-					reply = json.dumps(body) 
+					reply = Encode().process(body)
 					reply = encryption().encrypt(reply, "Test23")
 					sendController(reply, q)
 					inter = interact(int(client), timeout, q)
 				else:
 					body = {"status":"ERROR", "command":"interact", "reply": " ", "error": "ID Out Of Range"}
-					reply = json.dumps(body)
+					reply = Encode().process(body)
 					reply = encryption().encrypt(reply, "Test23")
 					sendController(reply, q)
 
@@ -231,7 +231,7 @@ def main():
 				body = {"status":"ERROR", "command":"unknown",
 					"reply": "I'm Affraid I Can't Let You Do That Dave",
 					 "error": "ID Out Of Range"}
-				reply = json.dumps(body)
+				reply = Encode().process(body)
 				reply = encryption().encrypt(reply, "Test23")
 				if (sendController(reply, q) == 0): break
 				else:pass
