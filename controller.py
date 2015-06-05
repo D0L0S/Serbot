@@ -31,10 +31,8 @@ class control():
 			command = raw_input("$")
 			try:
 				if(command == "clear"):
-					if sys.platform == 'win32':
-						os.system("cls")
-					else:
-						os.system("clear")
+					if sys.platform == 'win32': os.system("cls")
+					else: os.system("clear")
 				elif(command == "help"):
 					print config["allcommands"]
 				elif("interact" in command):
@@ -74,12 +72,8 @@ class control():
 
 if __name__=="__main__":
 	parser = argparse.ArgumentParser()
-	parser.add_argument("-H", "--host", help="Host IP Address", required = True)
-	parser.add_argument("-p", "--port", type=int, help="Connection Port Number", required = True)
-	parser.add_argument("-P", "--password", type=str, help="Bridge Connection Password", required = True)
-	parser.add_argument('-v', '--version',
-						action='version',
-						version=' [+] Version: 1.0')
+	parser.add_argument("-p", "--password", type=str, help="Bridge Connection Password", required = True)
+	parser.add_argument('-v', '--version', action='version', version=' [+] Version: 1.0')
 	args = parser.parse_args()
 	if sys.platform == 'win32': os.system("cls")
 	else: os.system("clear")
