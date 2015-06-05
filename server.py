@@ -18,15 +18,6 @@ if (len(sys.argv) == 4):
 else:
 	sys.exit("Usage: server.py <port> <bridge port> <password>")
 
-intro = """
- ____ ____ ____ ____ ____ ____ 
-||S |||e |||r |||b |||o |||t ||
-||__|||__|||__|||__|||__|||__||
-|/__\|/__\|/__\|/__\|/__\|/__\|
-
-"""
-_API_VERSION = 'v0.1'
-
 s=socket(AF_INET, SOCK_STREAM)
 s.settimeout(5) #5 seconds are given for every operation by socket `s`
 s.bind(("0.0.0.0",port))
@@ -235,7 +226,7 @@ def main():
 				reply = encryption().encrypt(reply, "Test23")
 				if (sendController(reply, q) == 0): break
 				else:pass
-
+print config["intro"]
 while True:
 	try:		
 		main()
