@@ -5,6 +5,12 @@ import json
 
 #from database import *
 
+class Encode():
+	
+	def process(self, string):
+		result = json.dumps(string)
+		return result
+		
 class Decode():
 	
 	def process(self, string):
