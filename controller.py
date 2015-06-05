@@ -3,7 +3,6 @@
 
 import argparse
 from ConfigParser import SafeConfigParser
-import json
 import os
 import subprocess
 import sys
@@ -27,7 +26,7 @@ class control():
 			sys.exit(e)
 
 		login = {'password': args.password}
-		login = json.dumps(login)
+		login = Encode().process(login)
 		login = encryption().encrypt(login, "Test23")
 		s.send(login)
 
@@ -45,7 +44,7 @@ class control():
 						client = raw_input(" [?] Client Number:")
 						Cmd = {"command": command, "client":client}
 					else: Cmd = {"command": answers[0], "client":answers[1]} 
-					Cmd = json.dumps(Cmd)
+					Cmd = Encode().process(Cmd)
 					Cmd = encryption().encrypt(Cmd, "Test23")
 					s.send(Cmd)
 					reply = s.recv(20480)
@@ -55,7 +54,7 @@ class control():
 
 				else:
 					Cmd = {'command': command}
-					Cmd = json.dumps(Cmd)
+					Cmd = Encode().process(Cmd)
 					Cmd = encryption().encrypt(Cmd, "Test23")
 					s.send(Cmd)
 					reply = s.recv(20480)
