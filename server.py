@@ -15,8 +15,7 @@ if (len(sys.argv) == 4):
 	port = int(sys.argv[1])
 	bridgeport = int(sys.argv[2])
 	password = sys.argv[3]
-else:
-	sys.exit("Usage: server.py <port> <bridge port> <password>")
+else: sys.exit("Usage: server.py <port> <bridge port> <password>")
 
 s=socket(AF_INET, SOCK_STREAM)
 s.settimeout(5) #5 seconds are given for every operation by socket `s`
@@ -61,14 +60,11 @@ def getConnections():
 			Insert = 'INSERT INTO clients (id, ip_address, active) VALUES ("1", "{address}", "1");'.format(address=str(addr[0]))
 			#db = Database().query(Insert)
 			print " [+] {address} Inserted to Database".format(address=addr[0])
-		except:
-			break
+		except: break
             
     ## Message Gramma
-    if len(allAddresses) == 1:
-		client = "Client"
-    else:
-		client = "Clients"
+    if len(allAddresses) == 1: client = "Client"
+    else: client = "Clients"
         
     body = {"status":"OK", "command":"accept", "reply": "{clientNumber} {cli} Added".format(clientNumber=str(len(allAddresses)), cli=client), "error": "null"}
     reply = Encode().process(body)
@@ -86,8 +82,7 @@ def sendController(msg, q):
 ## User Login Verification
 def verifyUser(credentials):
 	Passwd = jsonDecode(credentials, "password")
-	if (Passwd == password):
-		return True  
+	if (Passwd == password): return True  
 	else: return False
         
 def listClients():
@@ -101,12 +96,9 @@ def listClients():
 				clientList.append(d)
 			jsonList = Encode().process(clientList)
 			reply = {"status":"OK", "command":"list", "total": str(length), "clients": clientList, "error": "null"}
-		else: 
-			reply = {"status":"OK", "command":"list", "total": "0", "clients": "null", "error": "null"}
-			
+		else: eply = {"status":"OK", "command":"list", "total": "0", "clients": "null", "error": "null"}
 		return reply
-    except Exception as e:
-		print " [!] {error}".format(error = e)
+    except Exception as e: print " [!] {error}".format(error = e)
 
 def interact(id, timeout, q):
 		try:
@@ -211,8 +203,7 @@ def main():
 			#			item.send(command)
 			#		except:
 			#			pass
-			elif(command == "quitClients"):
-				quitClients()
+			elif(command == "quitClients"): quitClients()
 				
 			elif(command == "quit"):
 				sendController(" [-] Goodbye", q)
@@ -228,11 +219,8 @@ def main():
 				else:pass
 print config["intro"]
 while True:
-	try:		
-		main()
-	except KeyboardInterrupt:
-		quitClients()
-	except:
-		quitClients()
+	try: main()
+	except KeyboardInterrupt: quitClients()
+	except: quitClients()
 
 	time.sleep(5)
