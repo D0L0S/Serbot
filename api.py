@@ -67,6 +67,11 @@ class Decode():
 		except Exception as error:
 			return str(error)
 	
+	def cpassword(self, password):
+		jsonString = Decode().parse(password)
+		password = (jsonString["password"])
+		return password
+		
 	def formatData(self, data):
 		ipAddresses = []
 		length = len(data)
