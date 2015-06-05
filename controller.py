@@ -4,9 +4,9 @@
 import argparse
 from ConfigParser import SafeConfigParser
 import os
-import subprocess
+#import subprocess
 import sys
-import threading
+#import threading
 import time
 from socket import *
 
