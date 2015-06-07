@@ -23,9 +23,9 @@ class control():
 		except Exception as e:
 			sys.exit(e)
 
-		login = {'password': args.password}
+		login = {"status":"OK", "command":"authenticate", 'password':str(args.password)}
 		login = Encode().process(login)
-		login = encryption().encrypt(login,  config["password"])
+		login = encryption().encrypt(login, config["password"])
 		s.send(login)
 
 		while True:
@@ -49,7 +49,9 @@ class control():
 				s.send(Cmd)
 				reply = s.recv(20480)
 				reply = encryption().decrypt(reply, config["password"])
-				Reply = Decode().process(reply)
+				print "Reply: " + str(reply)
+				Reply = Api().main(reply)
+				#Reply = Api().serverProcess(reply)
 				print str(Reply)
 
 			except KeyboardInterrupt:

