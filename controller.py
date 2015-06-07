@@ -8,7 +8,7 @@ import sys
 import time
 from socket import *
 
-from api import *
+from controlApi import *
 from encryption import *
 
 config = {}
@@ -51,7 +51,6 @@ class control():
 				reply = encryption().decrypt(reply, config["password"])
 				print "Reply: " + str(reply)
 				Reply = Api().main(reply)
-				#Reply = Api().serverProcess(reply)
 				print str(Reply)
 
 			except KeyboardInterrupt:

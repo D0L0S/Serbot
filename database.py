@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ConfigParser import SafeConfigParser
 import MySQLdb as mdb
 import sys
+
+config = {}
+execfile("Control.conf", config) 
 
 class Database:
 
@@ -11,7 +15,8 @@ class Database:
 		self.password='password'
 		self.host='127.0.0.1'
 		self.database='serbot'
-		self.con = mdb.connect(self.host, self.user, self.password, self.database);
+		self.con = mdb.connect(config["dbhost"], config["dbuser"], config["dbpassword"],config["database"],)
+		#self.host, self.user, self.password, self.database);
 
 	def query(self, q):
 		try:
