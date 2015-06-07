@@ -13,12 +13,28 @@ class Encode():
 		
 class Decode():
 	
+	def serverProcess(self, string):
+		jsonString = Decode().parse(string)
+		status = Decode().statusDecode(jsonString)
+		reply = (jsonString["command"])
+		return reply  
+	
+	def serverProcessClient(self, string):
+		jsonString = Decode().parse(string)
+		#status = Decode().statusDecode(jsonString)
+		reply = (jsonString["client"])
+		return reply  
+	
 	def process(self, string):
 		jsonString = Decode().parse(string)
 		status = Decode().statusDecode(jsonString)
 		if status == "OK": 
 			command = Decode().commandDecode(jsonString)
-			if command == "list":reply = Decode().formatData(jsonString)
+			if command == "list":
+				clients = (jsonString["clients"])
+				List = clients[0]
+				return List
+				
 			else: reply = Decode().replyDecode(jsonString)
 		else:
 			reply = Decode().errorDecode(jsonString)

@@ -7,7 +7,7 @@ from Crypto.Cipher import AES
 import hashlib
 
 config = {}
-execfile("example.conf", config) 
+execfile("Control.conf", config)  
 
 class encryption():
 	def generate_key(self, password, salt, iterations):

