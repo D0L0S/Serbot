@@ -132,14 +132,6 @@ def interact(id, timeout, q):
 					break
 					
 				try:
-					#if ("cd " in command):
-					#	allConnections[id].send(data)
-					#	msg=allConnections[id].recv(20480)
-					#	vtpath = msg + "> "
-					#	print "PATH: " + str(vtpath)
-					#	if (sendController(vtpath, q) == 0):
-					#		breakit = True
-					#		break
 					if (command == "stop"): 
 						closed = {"status":"OK", "command":"interact", "reply": "Connection Closed", "error": "null"}
 						sendController(closed, q)
@@ -213,6 +205,14 @@ def main():
 					reply = Encode().process(body)
 					reply = encryption().encrypt(reply, config["password"])
 					sendController(reply, q)
+					
+			elif(command == "invalid"):
+				body = {"status":"ERROR", "command":"unknown",
+					"reply": "I'm Affraid I Can't Let You Do That Dave",
+					 "error": "Invalid Command Supplied"}
+				reply = Encode().process(body)
+				reply = encryption().encrypt(reply, config["password"])
+				sendController(reply, q)
 
 			elif(command == "quitClients"): quitClients()
 				
@@ -223,11 +223,11 @@ def main():
 			else:
 				body = {"status":"ERROR", "command":"unknown",
 					"reply": "I'm Affraid I Can't Let You Do That Dave",
-					 "error": "Unknown Command Supplied"}
+					 "error": "An Unknown Error Has Occured"}
 				reply = Encode().process(body)
 				reply = encryption().encrypt(reply, config["password"])
-				if (sendController(reply, q) == 0): break
-				else:pass
+				sendController(reply, q)
+
 				
 if __name__ == "__main__": 
 	print (term.format(config["intro"], term.Attr.BOLD))

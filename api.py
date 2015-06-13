@@ -11,19 +11,21 @@ class Api():
 		status = Api().status(jsonString)
 		if status == "OK":
 			command = Api().command(jsonString)
+			print command
 			if command in functions:
 				# Call Function based on Command parameter
 				a = Api()
 				method = getattr(a, command) 
 				password = method(jsonString)
 				return password
-			else: Api().InvalidFunction()
+			else: reply = Api().InvalidFunction()
 		else:
 			reply = Api().errorDecode(jsonString)
 		return reply
 
 	def InvalidFunction(self):
-		print "Invalid"
+		reply = "invalid"
+		return reply
 
 ################################################
 ################################################
