@@ -88,8 +88,6 @@ class Api():
 		return str(error)
 	
 	def authenticate(self, string):
-		print "String: " + str(string)
-		print "Type: " + str(type(string))
 		password = (str(string["password"]))
 		return password
 		

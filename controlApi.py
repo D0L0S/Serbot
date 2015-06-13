@@ -6,7 +6,7 @@ from jsonEncoder import *
 class Api():
 	
 	def main(self, string):
-		functions = ["accept", "List", "interact", "reply", "customDecode", "clientTotal", "listClients", "authenticate"]
+		functions = ["accept", "List", "interact", "customDecode", "clientTotal", "listClients"]
 		jsonString = Decode().process(string)
 		status = Api().status(jsonString)
 		if status == "OK":
@@ -15,11 +15,11 @@ class Api():
 				# Call Function based on Command parameter
 				a = Api()
 				method = getattr(a, command) 
-				password = method(jsonString)
-				return password
-			else: Api().InvalidFunction()
+				reply = method(jsonString)
+				#return reply
+			else: reply = Api().InvalidFunction()
 		else:
-			reply = Api().errorDecode(jsonString)
+			reply = Api().error(jsonString)
 		return reply
 
 	def InvalidFunction(self):
@@ -55,15 +55,16 @@ class Api():
 	
 	def accept(self, string):
 		try:
-			reply = Api().command(string)
+			reply = (string["reply"])
 			return reply
 		except Exception as error:
 			return str(error)
 		
 	def List(self, string):
+		print "LIST"
 		try:
-			reply = Api().command(string)
-			return reply
+			List = Api().listClients(string)
+			return List
 		except Exception as error:
 			return str(error)
 		
@@ -79,21 +80,13 @@ class Api():
 		return clientNumber
 		
 	def listClients(self, string):
-		clientList = (string["clients"])
-		clientList = Decode().process(clientList)
+		clientlist = (string["clients"])
+		clientList = Decode().process(clientlist)
 		return clientList
 		
 	def error(self, string):
 		error = (string["error"])
-		return str(error)
-	
-	def authenticate(self, string):
-		print "String: " + str(string)
-		print "Type: " + str(type(string))
-		password = (str(string["password"]))
-		return password
-		
+		return str(error)		
 	
 if __name__=="__main__":
 	api = Api()
-controlApi.py

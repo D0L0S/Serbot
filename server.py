@@ -3,6 +3,7 @@
 
 import os
 from socket import *
+from stem.util import term
 import sys
 import time
 
@@ -191,7 +192,7 @@ def main():
 				if (sendController(clients, q) == 0): break
 				else: pass
 
-			elif(command == "list"):
+			elif(command == "List"):
 				clientList = listClients()
 				try:
 					clientList = encryption().encrypt(clientList, config["password"])
@@ -222,14 +223,14 @@ def main():
 			else:
 				body = {"status":"ERROR", "command":"unknown",
 					"reply": "I'm Affraid I Can't Let You Do That Dave",
-					 "error": "ID Out Of Range"}
+					 "error": "Unknown Command Supplied"}
 				reply = Encode().process(body)
 				reply = encryption().encrypt(reply, config["password"])
 				if (sendController(reply, q) == 0): break
 				else:pass
 				
 if __name__ == "__main__": 
-	print config["intro"]
+	print (term.format(config["intro"], term.Attr.BOLD))
 	while True:
 		try: main()
 		except KeyboardInterrupt: quitClients()

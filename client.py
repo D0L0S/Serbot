@@ -1,7 +1,15 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import subprocess, os, sys, time, threading, signal, smtplib, random, fnmatch
+import fnmatch
+import os
+import random
+import signal
+import smtplib
 from socket import *
+import subprocess
+import sys
+import time
 from threading import Thread
 
 if (len(sys.argv) == 3):
