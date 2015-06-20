@@ -5,9 +5,12 @@ import argparse
 from ConfigParser import SafeConfigParser
 import os
 import sys
-import time
+import socks
 from socket import *
 import StringIO
+import stem.process
+from stem.util import term
+import time
 
 from controlApi import *
 from encryption import *
@@ -15,10 +18,29 @@ from encryption import *
 config = {}
 execfile("Control.conf", config) 	
 	
+
 class control():
-		
+	
+	def startTor():
+		print(term.format(" [+] Starting Tor Connection", term.Attr.BOLD))
+		global tor_process
+		tor_process = stem.process.launch_tor_with_config(
+			config = {
+				'SocksPort': str(SOCKS_PORT),
+				'ExitNodes': '{ru}',
+			},
+			init_msg_handler = print_bootstrap_lines,
+		)
+
+	def stopTor():
+		tor_process.kill() 
+	
 	def main(self):
 		try:
+			if config["tor"]==True and config["server"] != "127.0.0.1":
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 5090)
+				socket.socket = socks.socksocket
+			else:pass
 			s=socket(AF_INET, SOCK_STREAM)
 			s.connect((config["server"],config["port"]))
 		except Exception as e:
@@ -55,6 +77,7 @@ class control():
 				try:
 					s.send("quit")
 					s.close()
+					stopTor()
 					print " [!] Connection Closed"
 					break
 				except:
@@ -63,6 +86,7 @@ class control():
 				print e
 				print " [!] Connection Closed"
 				s.close()
+				stopTor()
 				break
 
 if __name__=="__main__":
