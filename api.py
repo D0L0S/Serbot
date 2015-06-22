@@ -84,7 +84,12 @@ class Api():
 		clientList = (string["clients"])
 		clientList = Decode().process(clientList)
 		return clientList
-		
+	
+	def ProcessClient(self, string):
+		jsonString = Decode().process(string)
+		client = (jsonString["client"])
+		return str(client)
+	
 	def error(self, string):
 		error = (string["error"])
 		return str(error)
